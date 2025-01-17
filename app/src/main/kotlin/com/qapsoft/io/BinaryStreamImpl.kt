@@ -6,7 +6,7 @@ import java.io.RandomAccessFile
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
-class BinaryStreamImpl(file: File, size:Int):BinaryStream, Closeable{
+open class BinaryStreamImpl(file: File, private val size:Int):BinaryStream, Closeable{
     val channel: FileChannel
     val mappedByteBuffer: MappedByteBuffer
     init {
@@ -22,6 +22,10 @@ class BinaryStreamImpl(file: File, size:Int):BinaryStream, Closeable{
 
     override fun readAt(pos: Long, buffer: ByteArray): Int {
         return readAt(pos,buffer,0 , buffer.size)
+    }
+
+    override fun length(): Long {
+        return size.toLong()
     }
 
     override fun writeAt(pos: Long, buffer:ByteArray,start: Int, offset: Int) {
