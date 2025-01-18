@@ -14,7 +14,7 @@ class DataCompressionTest {
         //get random testData
         val a = ByteArrayStreamReaderTest()
         a.setUp()
-        testData=a.streamReader.bytes
+        testData=a.streamReader.toByteArray()
     }
 
     @Test

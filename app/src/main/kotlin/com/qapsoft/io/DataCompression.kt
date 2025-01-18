@@ -10,9 +10,9 @@ import java.util.zip.Inflater
 
 object DataCompression {
 
-    fun deflateData(data: ByteArray): ByteArray {
+    fun deflateData(data: ByteArray, start:Int,offset:Int): ByteArray {
         val deflater = Deflater()
-        deflater.setInput(data)
+        deflater.setInput(data, start, offset)
         deflater.finish()
 
         val outputStream = ByteArrayOutputStream()
@@ -23,6 +23,9 @@ object DataCompression {
         }
         deflater.end()
         return outputStream.toByteArray()
+    }
+    fun deflateData(data: ByteArray): ByteArray {
+        return deflateData(data, 0 , data.size)
     }
 
     fun inflateData(data: ByteArray): ByteArray? {

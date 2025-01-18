@@ -81,6 +81,9 @@ fun BinaryStreamReader.getBytesAt(pos:Long, offset:Int):ByteArray{
     return res
 }
 
+fun ByteArrayStreamReader.toByteArray():ByteArray{
+    return getBytesAt(0, length().toInt())
+}
 fun ByteArray.asInt():Int{
     val bytes = this
     return (bytes[0].toInt() and 0xFF shl 24) or
