@@ -49,22 +49,4 @@ object DataCompression {
         return outputStream.toByteArray()
     }
 
-    /*fun inflateData(data: ByteArray): ByteArray? {
-        val bos = ByteArrayOutputStream()
-        inflater(data, bos)
-        val res = bos.toByteArray()
-        bos.close()
-        return res
-    }*/
-
-    private fun inflater(data: ByteArray, bos: ByteArrayOutputStream) {
-        val inflater = Inflater()
-        inflater.setInput(data)
-        val arrayOfByte = ByteArray(8192)
-        while (!inflater.finished()) {
-            val i = inflater.inflate(arrayOfByte)
-            bos.write(arrayOfByte, 0, i)
-        }
-        inflater.end()
-    }
 }

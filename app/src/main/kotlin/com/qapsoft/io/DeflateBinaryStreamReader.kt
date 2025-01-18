@@ -1,6 +1,6 @@
 package com.qapsoft.io
 
-class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
+class DeflateBinaryStreamReader(val deflateSource: BinaryStreamReader):BinaryStreamReader {
 
     companion object{
         //int 4
@@ -13,12 +13,12 @@ class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
         val POS_ORIGINAL_LENGTH_LONG                = 116L
     }
 
-    private val maxDeflateBlockSize = reader.getBytesAt(POS_MAX_DEFLATE_BLOCK_SIZE_INTEGER, Int.SIZE_BYTES).asInt()
-    private val headerSize = reader.getBytesAt(POS_HEADER_SIZE_INTEGER, Int.SIZE_BYTES).asInt()
-    private val maxBlocksCount = reader.getBytesAt(POS_MAX_BLOCKS_COUNT_INTEGER, Int.SIZE_BYTES).asInt()
-    private val blocksCount = reader.getBytesAt(POS_BLOCKS_COUNT_INTEGER, Int.SIZE_BYTES).asInt()
+    private val maxDeflateBlockSize = deflateSource.getBytesAt(POS_MAX_DEFLATE_BLOCK_SIZE_INTEGER, Int.SIZE_BYTES).asInt()
+    private val headerSize = deflateSource.getBytesAt(POS_HEADER_SIZE_INTEGER, Int.SIZE_BYTES).asInt()
+    private val maxBlocksCount = deflateSource.getBytesAt(POS_MAX_BLOCKS_COUNT_INTEGER, Int.SIZE_BYTES).asInt()
+    private val blocksCount = deflateSource.getBytesAt(POS_BLOCKS_COUNT_INTEGER, Int.SIZE_BYTES).asInt()
 
-    private val _originalLength = reader.getBytesAt(POS_ORIGINAL_LENGTH_LONG, Long.SIZE_BYTES).asLong()
+    private val _originalLength = deflateSource.getBytesAt(POS_ORIGINAL_LENGTH_LONG, Long.SIZE_BYTES).asLong()
 
     private val blockIndexSize:Int = maxBlocksCount*16 // 8 for start , 8 for end pos
     private val blockIndexStartPos = headerSize+512 //512 if header 0
@@ -30,6 +30,7 @@ class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
         var totalReadSize = 0
         var readSize = 0
         var block = Block.getBlockByPosition(pos, this)
+
         readSize=block.readAt(pos+p, buffer, p, o)
         while (readSize>0){
 
@@ -81,6 +82,7 @@ class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
                 )
             }
             fun getBlockByPosition(position: Long, reader:DeflateBinaryStreamReader?=null):Block{
+
                 val blockIndex = getBlockIndex(position, reader)
                 return get(blockIndex, reader)
             }
@@ -93,8 +95,8 @@ class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
             private fun getBlock(index:Int,reader:DeflateBinaryStreamReader):Block{
                 return reader.run {
                     val pos = blockIndexStartPos+(index*16).toLong()
-                    val start = getBytesAt(pos,Long.SIZE_BYTES).asLong()+blocksStartPos
-                    val end = getBytesAt(pos+Long.SIZE_BYTES,Long.SIZE_BYTES).asLong()+blocksStartPos
+                    val start = deflateSource.getBytesAt(pos,Long.SIZE_BYTES).asLong()+blocksStartPos
+                    val end = deflateSource.getBytesAt(pos+Long.SIZE_BYTES,Long.SIZE_BYTES).asLong()+blocksStartPos
 
                     val startPos = index*maxDeflateBlockSize.toLong()
                     val endPos = if((startPos+maxDeflateBlockSize)>_originalLength)
@@ -107,7 +109,7 @@ class DeflateBinaryStreamReader(reader: BinaryStreamReader):BinaryStreamReader {
                         endPos = endPos,
                         blockReader = ByteArrayStreamReader(
                             DataCompression.inflateData(
-                                getBytesAt(start, (end-start).toInt())
+                                deflateSource.getBytesAt(start, (end-start).toInt())
                             )!!
                         ),
                         deflateReader = reader

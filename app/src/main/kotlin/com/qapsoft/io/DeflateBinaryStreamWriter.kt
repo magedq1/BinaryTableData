@@ -17,21 +17,23 @@ fun BinaryStreamReader.Deflate(output:BinaryStreamWriter, blockSize:Int=8192, he
         val blockIndexSize:Int = maxBlocksCount*16 // 8 for start , 8 for end pos
         val blockIndexStartPos = headerSize+512 //512 if header 0
         val blocksStartPos = blockIndexStartPos+blockIndexSize
-
         val byteBuffer = ByteArray(blockSize)
+        var lastEndPos = blocksStartPos
         for(i in 0 until usedBlocksCount){
             val realInputPos = i*blockSize
             val readSize = readAt(realInputPos.toLong(), buffer = byteBuffer)
             val compressedBytes = DataCompression.deflateData(byteBuffer, 0 , readSize)
 
             //write compressed block
-            val realOutputPos = blocksStartPos+(i*blockSize)
+            val realOutputPos = lastEndPos
             output.writeAt(realOutputPos.toLong(), compressedBytes)
 
             //write block index
             val realBlockIndexPos = blockIndexStartPos+(i*16)
-            output.writeAt(realBlockIndexPos.toLong(), (i*blockSize).toLong().toByteArray())
-            output.writeAt(realBlockIndexPos.toLong()+8, (i*blockSize+compressedBytes.size).toLong().toByteArray())
+            val shortOutputPos = realOutputPos-blocksStartPos
+            output.writeAt(realBlockIndexPos.toLong(), shortOutputPos.toLong().toByteArray())
+            output.writeAt(realBlockIndexPos.toLong()+8, (shortOutputPos+compressedBytes.size).toLong().toByteArray())
+            lastEndPos+=compressedBytes.size
         }
     }
 }

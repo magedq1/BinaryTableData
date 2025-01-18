@@ -1,7 +1,7 @@
 package com.qapsoft.io
 
-class ByteArrayStream(private val bytes:ByteArray):ByteArrayStreamReader(bytes), BinaryStreamWriter {
-    var _length:Long = 0
+class ByteArrayStream(private val bytes:ByteArray):ByteArrayStreamReader(bytes), BinaryStream {
+    private var _length:Long = 0
     override fun writeAt(pos: Long, buffer: ByteArray, start: Int, offset: Int) {
         if(pos>bytes.size)
             throw ArrayIndexOutOfBoundsException()

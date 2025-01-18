@@ -49,10 +49,10 @@ class ByteArrayStreamReaderTest {
     @Test
     fun readOverOffset(){
         assertThrows<ArrayIndexOutOfBoundsException> {
-            streamReader.getBytesAt(source.size.toLong(),50)
+            streamReader.getBytesAt(source.size.toLong()+1,50)
         }
-      //  assert( streamReader.getBytesAt(source.size.toLong(),50).isEmpty())
-        //assert( streamReader.getBytesAt(source.size.toLong()-25,50).size==25)
+        assert( streamReader.readAt(source.size.toLong(), ByteArray(50))==0)
+        assert( streamReader.readAt(source.size.toLong()-30, ByteArray(50))==30)
     }
 
 }
