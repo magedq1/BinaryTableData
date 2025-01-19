@@ -6,6 +6,8 @@ package org.example
 import com.qapsoft.io.BinaryColumn
 import com.qapsoft.io.BinaryTableData
 import com.qapsoft.io.BinaryTableHeader
+import com.qapsoft.io.getInt
+import com.qapsoft.io.getString
 import com.qapsoft.io.setValue
 import java.io.File
 
@@ -13,15 +15,35 @@ fun main() {
 
     val table = BinaryTableData(
         header = BinaryTableHeader(
-            1000,
+            maxRowsCount = 1000,
             columns = listOf(
                 BinaryColumn.Int("_id"),
-                BinaryColumn.Int("first_name"),
-                BinaryColumn.Int("last_name"),
+                BinaryColumn.String("first_name"),
+                BinaryColumn.String("last_name"),
+                BinaryColumn.Raw("raw_data", 8192), //ex: 8KB
                 )
 
         ),
-        file = File("c:/52/a.txt")
+        file = File("storedFile")
     )
+    //write some data
+    val rowId = 0
+    table.setValue(rowId, "_id", 1)
+    //or you can use column id
+    //table.setValue(rowId, 0, 1)
+
+    table.setValue(rowId, "first_name", "Ali")
+
+    table.setValue(rowId, "last_name", "Saleh")
+
+    table.setValue(rowId, "raw_data", ByteArray(8192)) //any raw data
+
+    //read data
+    println(table.getInt(rowId, "_id"))
+    println(table.getString(rowId, "first_name"))
+    println(table.getString(rowId, "last_name"))
+
+    val rawData:ByteArray = table.getValue(rowId, "raw_data")
+
 
 }

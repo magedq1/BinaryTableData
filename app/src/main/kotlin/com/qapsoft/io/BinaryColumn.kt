@@ -5,6 +5,12 @@ data class BinaryColumn (
     val length:Int
 ){
     companion object{
+        fun Raw (name: String, length: Int):BinaryColumn{
+            return BinaryColumn(
+                name = name,
+                length = length
+            )
+        }
         fun Int (name: String):BinaryColumn{
             return BinaryColumn(
                 name = name,
