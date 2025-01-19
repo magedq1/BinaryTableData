@@ -80,14 +80,15 @@ import java.io.File
 fun main() {
 
     val table = BinaryTableData(/*.....*/)
-    
+
     //read data
-	
+
     val rowId = 0
     println(table.getInt(rowId, "_id"))
     println(table.getString(rowId, "first_name"))
     println(table.getString(rowId, "last_name"))
 
-    val rawData:ByteArray = table.getValue(rowId, "raw_data")
+    val rawData: ByteArray = table.getValue(rowId, "raw_data")
+}
 ```
 

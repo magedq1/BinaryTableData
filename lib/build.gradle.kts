@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.jvm)
 
     // Apply the application plugin to add support for building a CLI application in Java.
-    application
+    `java-library`
 }
 
 repositories {
@@ -19,16 +19,13 @@ repositories {
 }
 
 dependencies {
-    // Use the Kotlin JUnit 5 integration.
-    //testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
-    // Use the JUnit 5 integration.
-    testImplementation(libs.junit.jupiter.engine)
+    // Use JUnit Jupiter for testing.
     testImplementation(libs.junit.jupiter)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // This dependency is used by the application.
+
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation(libs.guava)
 
 }
@@ -40,10 +37,6 @@ java {
     }
 }
 
-application {
-    // Define the main class for the application.
-    mainClass = "org.example.AppKt"
-}
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.

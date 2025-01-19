@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "BinaryTableData"
-include("app")
+include(":lib")
