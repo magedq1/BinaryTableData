@@ -15,7 +15,6 @@ BinaryTableData is a Kotlin library designed to simplify reading and writing str
 2. Build the project using Gradle. You can use the command `./gradlew build` in the project root directory.
 3. The library can then be included as a dependency in your Kotlin project.
 
-[Further details can be added as needed.]
 
 ## Usage Examples
 
