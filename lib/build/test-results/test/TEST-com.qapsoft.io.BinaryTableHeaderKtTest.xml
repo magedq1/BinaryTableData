@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.qapsoft.io.BinaryTableHeaderKtTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-01-20T10:26:43" hostname="DESKTOP-LJ8PJPQ" time="0.007">
+  <properties/>
+  <testcase name="asBinaryColumnList()" classname="com.qapsoft.io.BinaryTableHeaderKtTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
