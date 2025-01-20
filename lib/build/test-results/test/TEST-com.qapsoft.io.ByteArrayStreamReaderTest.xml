@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.qapsoft.io.ByteArrayStreamReaderTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-01-20T10:26:43" hostname="DESKTOP-LJ8PJPQ" time="0.081">
+  <properties/>
+  <testcase name="readOverOffset()" classname="com.qapsoft.io.ByteArrayStreamReaderTest" time="0.009"/>
+  <testcase name="readAt()" classname="com.qapsoft.io.ByteArrayStreamReaderTest" time="0.009"/>
+  <testcase name="readRandom()" classname="com.qapsoft.io.ByteArrayStreamReaderTest" time="0.061"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
