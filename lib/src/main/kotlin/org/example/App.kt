@@ -27,23 +27,25 @@ fun main() {
         file = File("storedFile")
     )
     //write some data
-    val rowId = 0
-    table.setValue(rowId, "_id", 1)
-    //or you can use column id
-    //table.setValue(rowId, 0, 1)
+    repeat(table.header.maxRowsCount){rowId->
+        table.setValue(rowId, "_id", 1)
+        //or you can use column id
+        //table.setValue(rowId, 0, 1)
 
-    table.setValue(rowId, "first_name", "Ali")
+        table.setValue(rowId, "first_name", "Ali")
 
-    table.setValue(rowId, "last_name", "Saleh")
+        table.setValue(rowId, "last_name", "Saleh")
 
-    table.setValue(rowId, "raw_data", ByteArray(8192)) //any raw data
+        table.setValue(rowId, "raw_data", ByteArray(8192)) //any raw data
 
-    //read data
-    println(table.getInt(rowId, "_id"))
-    println(table.getString(rowId, "first_name"))
-    println(table.getString(rowId, "last_name"))
+        //read data
+        println(table.getInt(rowId, "_id"))
+        println(table.getString(rowId, "first_name"))
+        println(table.getString(rowId, "last_name"))
 
-    val rawData:ByteArray = table.getValue(rowId, "raw_data")
+        val rawData:ByteArray = table.getValue(rowId, "raw_data")
+    }
+
 
 
 }

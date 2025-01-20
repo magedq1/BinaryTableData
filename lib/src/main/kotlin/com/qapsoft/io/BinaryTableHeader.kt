@@ -1,11 +1,14 @@
 package com.qapsoft.io
 
+import java.io.ByteArrayInputStream
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+
 data class BinaryTableHeader(
     val maxRowsCount:Int,
     val columns:List<BinaryColumn>,
-    val schemaSize:Int=4096,
-
 ){
+    val schemaSize:Int=columns.encodedAsByteArray().size+8 // 2 int schemaBytesSize, maxRowsCount
     val maxRowLength:Int
     val columnsInfoByIndex:Map<Int, ColumnInfo>
     val columnsInfoByName:Map<String, ColumnInfo>
@@ -33,3 +36,4 @@ data class BinaryTableHeader(
         val startPos:Int
     )
 }
+

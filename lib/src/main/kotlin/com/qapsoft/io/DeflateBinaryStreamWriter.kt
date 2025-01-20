@@ -3,7 +3,7 @@ package com.qapsoft.io
 fun BinaryStreamReader.Deflate(output:BinaryStreamWriter, blockSize:Int=8192, headerSize:Int=0){
     synchronized(this){
         val maxBlocksCount:Int = (length()/blockSize).toInt()+1
-        val usedBlocksCount= if(length().mod(length()/blockSize)==0L)
+        val usedBlocksCount= if(maxBlocksCount*blockSize>length())
                                 maxBlocksCount-1
                             else
                                 maxBlocksCount

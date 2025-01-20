@@ -1,6 +1,8 @@
 package com.qapsoft.io
 
-class ByteArrayStream(private val bytes:ByteArray):ByteArrayStreamReader(bytes), BinaryStream {
+class ByteArrayStream(private val bytes:ByteArray,
+                      private val shrinkToWrotePos:Boolean = true
+):ByteArrayStreamReader(bytes), BinaryStream {
     private var _length:Long = 0
     override fun writeAt(pos: Long, buffer: ByteArray, start: Int, offset: Int) {
         if(pos>bytes.size)
@@ -23,6 +25,8 @@ class ByteArrayStream(private val bytes:ByteArray):ByteArrayStreamReader(bytes),
     }
 
     override fun length(): Long {
-        return _length
+        if(shrinkToWrotePos)
+            return _length
+        return bytes.size.toLong()
     }
 }

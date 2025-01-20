@@ -2,16 +2,35 @@ package com.qapsoft.io
 
 import java.io.File
 
-open class BinaryTableData(open val header: BinaryTableHeader,
-                            open val streamReader: BinaryStreamReader?=null,
-                            open  val streamWriter: BinaryStreamWriter?=null) {
+open class BinaryTableData(val header: BinaryTableHeader,
+                           val streamReader: BinaryStreamReader?=null,
+                           val streamWriter: BinaryStreamWriter?=null) {
     constructor(header: BinaryTableHeader,stream: BinaryStream):this(header, stream, stream)
     constructor(header: BinaryTableHeader,file: File):this(header,
         BinaryStreamImpl(file, header.schemaSize+
             header.maxRowsCount*header.maxRowLength
         ))
 
-
+    companion object{
+        fun from(reader: BinaryStreamReader):BinaryTableData{
+            val maxRowsCount = reader.getBytesAt(0,4).asInt()
+            val schemaBytesSize = reader.getBytesAt(4,4).asInt()
+            val columns = reader.getBytesAt(8, schemaBytesSize).asBinaryColumnList()
+            return BinaryTableData(
+                header = BinaryTableHeader(
+                    columns = columns,
+                    maxRowsCount = maxRowsCount
+                ),
+                streamReader=reader
+            )
+        }
+    }
+    init {
+        val schemaData = header.columns.encodedAsByteArray()
+        streamWriter?.writeAt(0, header.maxRowsCount.toByteArray())
+        streamWriter?.writeAt(4, schemaData.size.toByteArray())
+        streamWriter?.writeAt(8, schemaData)
+    }
     fun setValue(rowIndex:Int, columnName:String, bytes:ByteArray){
         setValue(rowIndex, header.columnsInfoByName[columnName]!!.index, bytes)
     }

@@ -30,17 +30,15 @@ class BinaryTableDataTest{
 
         val header = BinaryTableHeader(
             maxRowsCount = rows,
-            columns = columns,
-            schemaSize = schemaSize
+            columns = columns
         )
 
-        val stream = ByteArrayStream(ByteArray(primarySize*2*rows))
-        val table = BinaryTableData(
-            header,
-            stream
+        val writer = ByteArrayStreamWriterAutoSize()
+        var table = BinaryTableData(
+            header = header,
+            streamWriter = writer
         )
         val map = mutableMapOf<String,ByteArray>()
-        println("Ram minimum..-> "+ (primarySize*2*rows))
         repeat(rows){rowIndex->
             columns.forEachIndexed { colIndex, c ->
                 val data = EncryptionHelper.randomString(rand.nextInt(c.length)).toByteArray()
@@ -51,7 +49,13 @@ class BinaryTableDataTest{
                 }
             }
         }
-        println("usage: ${table.streamReader!!.length()}")
+
+        table = BinaryTableData.from(
+            ByteArrayStreamReader(
+                writer.toByteArray()
+            )
+        )
+
         map.forEach { entry->
             val sepPos = entry.key.indexOf('-')
             val rowId = entry.key.substring(0,sepPos).toInt()

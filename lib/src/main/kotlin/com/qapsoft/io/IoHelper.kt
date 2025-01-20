@@ -1,5 +1,7 @@
 package com.qapsoft.io
 
+import java.io.ByteArrayInputStream
+import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
@@ -149,4 +151,36 @@ fun Long.toByteArray():ByteArray{
         (value shr 8).toByte(),
         value.toByte()
     )
+}
+
+fun List<BinaryColumn>.encodedAsByteArray():ByteArray{
+    val stringBuilder = StringBuilder()
+    for (col in this){
+        stringBuilder
+            .append(col.name)
+            .append("/")
+            .append(col.length)
+            .append("/")
+            .append(col.columnType.name)
+            .appendLine()
+    }
+    val rawColumns = stringBuilder.toString().toByteArray(StandardCharsets.UTF_8)
+    return rawColumns
+}
+
+fun ByteArray.asBinaryColumnList():List<BinaryColumn>{
+    val result = mutableListOf<BinaryColumn>()
+    val reader = InputStreamReader(ByteArrayInputStream(this), StandardCharsets.UTF_8)
+    val lines = reader.readLines()
+    for(l in lines){
+        val colData = l.split("/")
+        result.add(
+            BinaryColumn(
+                name = colData[0],
+                length = colData[1].toInt(),
+                columnType = BinaryColumn.ColumnType.valueOf(colData[2])
+            )
+        )
+    }
+    return result
 }
