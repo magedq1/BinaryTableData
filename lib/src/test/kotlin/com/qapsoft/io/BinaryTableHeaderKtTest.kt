@@ -18,7 +18,9 @@ class BinaryTableHeaderKtTest {
         )
         val encoded = cols.encodedAsByteArray()
 
+        println(cols.first().columnType)
         val decoded = encoded.asBinaryColumnList()
+        println(decoded.first().columnType)
         assertArrayEquals(
             cols.toTypedArray(),
             decoded.toTypedArray()

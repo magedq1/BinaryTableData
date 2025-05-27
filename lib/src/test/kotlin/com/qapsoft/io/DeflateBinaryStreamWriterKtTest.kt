@@ -20,12 +20,12 @@ class DeflateBinaryStreamWriterKtTest {
     fun deflate() {
         val reader = ByteArrayStreamReader(
             generateRandomByteArray(
-                size= 10*1024*1024, //10MB
+                size= 10*1024*1024+5, //10MB+5Bytes
                 end = 64
             )
         )
         val writer = ByteArrayStreamWriterAutoSize()
-        reader.Deflate(
+        reader.deflate(
             writer
         )
 

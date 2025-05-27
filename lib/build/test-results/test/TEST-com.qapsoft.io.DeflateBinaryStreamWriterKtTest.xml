@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.qapsoft.io.DeflateBinaryStreamWriterKtTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-01-20T10:26:44" hostname="DESKTOP-LJ8PJPQ" time="0.375">
+<testsuite name="com.qapsoft.io.DeflateBinaryStreamWriterKtTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-02-01T18:50:59" hostname="DESKTOP-LJ8PJPQ" time="0.474">
   <properties/>
-  <testcase name="deflate()" classname="com.qapsoft.io.DeflateBinaryStreamWriterKtTest" time="0.375"/>
+  <testcase name="deflate()" classname="com.qapsoft.io.DeflateBinaryStreamWriterKtTest" time="0.474"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

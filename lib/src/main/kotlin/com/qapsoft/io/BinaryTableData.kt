@@ -12,6 +12,18 @@ open class BinaryTableData(val header: BinaryTableHeader,
         ))
 
     companion object{
+        fun from(file: File):BinaryTableData{
+            return from(
+                BinaryStreamImpl(
+                    file = file,
+                    size = file.length().toInt()
+                )
+            )
+        }
+
+        fun from(bytes: ByteArray):BinaryTableData{
+            return from(ByteArrayStreamReader(bytes))
+        }
         fun from(reader: BinaryStreamReader):BinaryTableData{
             val maxRowsCount = reader.getBytesAt(0,4).asInt()
             val schemaBytesSize = reader.getBytesAt(4,4).asInt()

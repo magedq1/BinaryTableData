@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.qapsoft.io.BinaryTableDataTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-01-20T10:26:42" hostname="DESKTOP-LJ8PJPQ" time="1.725">
-  <properties/>
-  <testcase name="test()" classname="com.qapsoft.io.BinaryTableDataTest" time="1.725"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

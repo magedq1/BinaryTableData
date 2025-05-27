@@ -1,9 +1,9 @@
 package com.qapsoft.io
 
-fun BinaryStreamReader.Deflate(output:BinaryStreamWriter, blockSize:Int=8192, headerSize:Int=0){
+fun BinaryStreamReader.deflate(output:BinaryStreamWriter, blockSize:Int=8192, headerSize:Int=0){
     synchronized(this){
         val maxBlocksCount:Int = (length()/blockSize).toInt()+1
-        val usedBlocksCount= if(maxBlocksCount*blockSize>length())
+        val usedBlocksCount= if(maxBlocksCount*blockSize==length().toInt())
                                 maxBlocksCount-1
                             else
                                 maxBlocksCount
@@ -19,7 +19,7 @@ fun BinaryStreamReader.Deflate(output:BinaryStreamWriter, blockSize:Int=8192, he
         val blocksStartPos = blockIndexStartPos+blockIndexSize
         val byteBuffer = ByteArray(blockSize)
         var lastEndPos = blocksStartPos
-        for(i in 0 until usedBlocksCount){
+        for(i in 0 until  usedBlocksCount){
             val realInputPos = i*blockSize
             val readSize = readAt(realInputPos.toLong(), buffer = byteBuffer)
             val compressedBytes = DataCompression.deflateData(byteBuffer, 0 , readSize)
