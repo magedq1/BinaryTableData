@@ -65,10 +65,15 @@ open class BinaryTableData(val header: BinaryTableHeader,
         return res
     }
 
-    protected open fun getPos(rowIndex: Int, columnIndex: Int): Long {
+    open fun getPos(rowIndex: Int, columnIndex: Int): Long {
         return (header.schemaSize+
                 (rowIndex*header.maxRowLength)+
                 (header.columnsInfoByIndex[columnIndex]!!.startPos)).toLong()
 
+    }
+    open fun getAllRows(): ByteArray{
+        val start = getPos(0,0)
+        val end = streamReader?.length()?:start
+        return streamReader?.getBytesAt(start, (end-start).toInt())?:byteArrayOf()
     }
 }
