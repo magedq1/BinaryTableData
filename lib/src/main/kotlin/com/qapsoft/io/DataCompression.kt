@@ -36,6 +36,8 @@ object DataCompression {
         try {
             while (!inflater.finished()) {
                 val inflatedSize = inflater.inflate(buffer)
+                if(inflatedSize<=0)
+                    break
                 outputStream.write(buffer, 0, inflatedSize)
             }
         } catch (e: Exception) {
