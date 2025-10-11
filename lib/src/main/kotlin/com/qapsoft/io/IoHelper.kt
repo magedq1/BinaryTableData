@@ -77,9 +77,9 @@ fun BinaryTableData.getString(rowIndex:Int, columnName:String, charset: Charset=
 }
 
 
-fun BinaryStreamReader.getBytesAt(pos:Long, offset:Int):ByteArray{
-    val res = ByteArray(offset)
-    readAt(pos, res, 0, offset)
+fun BinaryStreamReader.getBytesAt(pos:Long, size:Int):ByteArray{
+    val res = ByteArray(size)
+    readAt(pos, res, 0, size)
     return res
 }
 

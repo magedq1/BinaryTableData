@@ -1,6 +1,6 @@
 package com.qapsoft.io
 
-class ByteArrayStreamWriterAutoSize(private val blockSize:Int=1024):BinaryStreamWriter {
+open class ByteArrayStreamWriterAutoSize(private val blockSize:Int=1024):BinaryStreamWriter {
     private var _length:Long =0
     private val blocks = mutableListOf<ByteArray>()
 
