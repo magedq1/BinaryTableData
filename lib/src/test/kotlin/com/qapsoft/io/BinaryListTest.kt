@@ -12,7 +12,7 @@ class BinaryListTest {
     @Test
     fun all() {
         val list = BinaryList(
-            TestStream()
+            ByteArrayStreamAutoSize()
         )
         assert(list.size==0)
         assert(
@@ -34,29 +34,6 @@ class BinaryListTest {
             list.get(2)
         }
 
-    }
-
-}
-private class TestStream: ByteArrayStreamWriterAutoSize(),  BinaryStream{
-    override fun readAt(
-        pos: Long,
-        buffer: ByteArray,
-        start: Int,
-        offset: Int
-    ): Int {
-        return ByteArrayStreamReader(toByteArray()).readAt(
-            pos, buffer, start, offset
-        )
-    }
-
-    override fun readAt(pos: Long, buffer: ByteArray): Int {
-        return ByteArrayStreamReader(toByteArray()).readAt(
-            pos, buffer
-        )
-    }
-
-    override fun length(): Long {
-        return ByteArrayStreamReader(toByteArray()).length()
     }
 
 }

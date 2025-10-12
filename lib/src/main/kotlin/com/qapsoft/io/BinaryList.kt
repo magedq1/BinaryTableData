@@ -31,7 +31,7 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
         stream.writeAt(0, realSize.toByteArray())
         return index
     }
-    fun get(index:Int): InputStream?{
+    fun get(index:Int): InputStream{
         if(index < 0 || index >= size)
             throw IndexOutOfBoundsException()
         val startPos = (schemaSize + (index*4)).let { indexPos->
