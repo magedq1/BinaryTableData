@@ -41,8 +41,12 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
             v
         }
         val endPos = (schemaSize + ((index+1)*4)).let {indexPos->
-            val v = stream.getBytesAt(indexPos.toLong(),4).asInt()
-            if (v <= 0) stream.length().toInt() else v
+            if((index+1)>=realSize)
+                stream.length().toInt()
+            else{
+                val v = stream.getBytesAt(indexPos.toLong(),4).asInt()
+                if (v <= 0) stream.length().toInt() else v
+            }
         }
         if (endPos < startPos) {
             throw StreamCorruptedException("end position ($endPos) < start position ($startPos)")
