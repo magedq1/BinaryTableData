@@ -55,5 +55,8 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
 
         return ByteArrayInputStream(bytes)
     }
+    fun toByteArray():ByteArray{
+        return stream.getBytesAt(0, stream.length().toInt())
+    }
 
 }
