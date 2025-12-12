@@ -7,14 +7,14 @@ open class BinaryTableData(val header: BinaryTableHeader,
                            val streamWriter: BinaryStreamWriter?=null) {
     constructor(header: BinaryTableHeader,stream: BinaryStream):this(header, stream, stream)
     constructor(header: BinaryTableHeader,file: File):this(header,
-        BinaryStreamImpl(file, header.schemaSize+
+        BinaryStreamImplMapped(file, header.schemaSize+
             header.maxRowsCount*header.maxRowLength
         ))
 
     companion object{
         fun from(file: File):BinaryTableData{
             return from(
-                BinaryStreamImpl(
+                BinaryStreamImplMapped(
                     file = file,
                     size = file.length().toInt()
                 )
