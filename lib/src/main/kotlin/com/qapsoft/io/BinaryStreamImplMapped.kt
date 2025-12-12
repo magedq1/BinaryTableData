@@ -22,7 +22,8 @@ open class BinaryStreamImplMapped(file: File, private val size:Int, val mode: Mo
             Mode.READ -> FileChannel.MapMode.READ_ONLY
             Mode.READ_WRITE -> FileChannel.MapMode.READ_WRITE
         }, 0, size.toLong())
-        channel.read(mappedByteBuffer)
+        if (mode==Mode.READ_WRITE)
+            channel.read(mappedByteBuffer)
     }
     override fun readAt(pos: Long,buffer:ByteArray, start: Int, offset: Int): Int {
         this.mappedByteBuffer.position(pos.toInt())
