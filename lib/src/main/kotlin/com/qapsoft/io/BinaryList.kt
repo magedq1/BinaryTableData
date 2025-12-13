@@ -66,7 +66,7 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
         if (endPos < startPos) {
             throw StreamCorruptedException("end position ($endPos) < start position ($startPos)")
         }
-        return stream.subReader(startPos.toLong(), (endPos-startPos).toLong())
+        return stream.subReader(startPos.toLong(), endPos.toLong())
     }
     fun toByteArray():ByteArray{
         return stream.getBytesAt(0, stream.length().toInt())

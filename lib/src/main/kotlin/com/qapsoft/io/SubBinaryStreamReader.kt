@@ -5,12 +5,11 @@ import java.io.InputStream
 class SubBinaryStreamReader(val source: BinaryStreamReader, val startPos:Long, val endPos:Long=source.length()):
     BinaryStreamReader {
 
-    private val subLength = endPos - startPos + 1
+    private val subLength = endPos - startPos
 
     init {
         require(startPos >= 0) { "start must be >= 0" }
         require(endPos >= startPos) { "end must be >= start" }
-        require(endPos < source.length()) { "end exceeds source length" }
     }
 
     override fun readAt(
@@ -35,19 +34,7 @@ class SubBinaryStreamReader(val source: BinaryStreamReader, val startPos:Long, v
     }
 
     override fun readAt(pos: Long, buffer: ByteArray): Int {
-        if (pos < 0 || pos >= subLength) return -1
-
-        val maxReadable = minOf(
-            buffer.size.toLong(),
-            subLength - pos
-        ).toInt()
-
-        return source.readAt(
-            this.startPos + pos,
-            buffer,
-            0,
-            maxReadable
-        )
+       return readAt(pos,buffer,0, buffer.size)
     }
 
     override fun length(): Long = subLength
