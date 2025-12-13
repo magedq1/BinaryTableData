@@ -31,7 +31,22 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
         stream.writeAt(0, realSize.toByteArray())
         return index
     }
+    fun getBytes(index: Int): ByteArray{
+        return getAsReader(index).toByteArray()
+    }
+
     fun get(index:Int): InputStream{
+        return get(index, true)
+    }
+
+    fun get(index:Int, useByteStream: Boolean): InputStream{
+        return if(useByteStream)
+            ByteArrayInputStream(getAsReader(index).toByteArray())
+        else
+            getAsReader(index).asInputStream()
+    }
+
+    fun getAsReader(index:Int): SubBinaryStreamReader{
         if(index < 0 || index >= size)
             throw IndexOutOfBoundsException()
         val startPos = (schemaSize + (index*4)).let { indexPos->
@@ -51,9 +66,7 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
         if (endPos < startPos) {
             throw StreamCorruptedException("end position ($endPos) < start position ($startPos)")
         }
-        val bytes = stream.getBytesAt(startPos.toLong(), endPos-startPos)
-
-        return ByteArrayInputStream(bytes)
+        return stream.subReader(startPos.toLong(), (endPos-startPos).toLong())
     }
     fun toByteArray():ByteArray{
         return stream.getBytesAt(0, stream.length().toInt())
