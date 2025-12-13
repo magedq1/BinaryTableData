@@ -1,6 +1,6 @@
 package com.qapsoft.io
 
-class ByteArrayStreamAutoSize: ByteArrayStreamWriterAutoSize(),  BinaryStream{
+class ByteArrayStreamAutoSize(blockSize:Int=1024): ByteArrayStreamWriterAutoSize(blockSize),  BinaryStream{
     private var _cacheReader: BinaryStreamReader? = null
     private val reader get() = _cacheReader?:let {
         _cacheReader = ByteArrayStreamReader(toByteArray())
