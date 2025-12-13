@@ -1,65 +1,69 @@
 package com.qapsoft.io
 
-open class ByteArrayStreamWriterAutoSize(private val blockSize:Int=1024):BinaryStreamWriter {
-    private var _length:Long =0
-    private val blocks = mutableListOf<ByteArray>()
+open class ByteArrayStreamWriterAutoSize(
+    val blockSize: Int = 1024
+) : BinaryStreamWriter {
 
+    protected var length: Long = 0
+    protected val blocks = ArrayList<ByteArray>()
 
     override fun writeAt(pos: Long, buffer: ByteArray, start: Int, offset: Int) {
-        var blockNum:Int = pos.toInt()/blockSize
-        synchronized(this){
-            var remainOffset = offset
-            var startBlockWritePos = (pos-(blockNum*blockSize)).toInt()
-            var bufferCursor = start
-            while (remainOffset>0){
-                val bytes = getBlock(blockNum++)
-                val bytesToWrite:Int =
-                    if(remainOffset>(blockSize-startBlockWritePos))
-                        (blockSize-startBlockWritePos)
-                    else
-                        remainOffset
+        var remaining = offset
+        var bufferPos = start
+        var blockIndex = (pos / blockSize).toInt()
+        var blockOffset = (pos % blockSize).toInt()
 
-                for(i in startBlockWritePos until blockSize){
-                    if(bufferCursor>=offset)
-                        continue
-                    bytes[i] = buffer[bufferCursor++]
-                }
+        val endPos = pos + offset
+        val maxBlockIndex = ((endPos - 1) / blockSize).toInt()
 
-                remainOffset-=bytesToWrite
-                startBlockWritePos=0
-            }
-            if(_length<(pos+offset))
-                _length = pos+offset
+        ensureCapacity(maxBlockIndex, endPos)
+
+        while (remaining > 0) {
+            val block = blocks[blockIndex]
+            val writable = minOf(blockSize - blockOffset, remaining)
+
+            System.arraycopy(
+                buffer,
+                bufferPos,
+                block,
+                blockOffset,
+                writable
+            )
+
+            bufferPos += writable
+            remaining -= writable
+            blockIndex++
+            blockOffset = 0
         }
-    }
-
-    private fun getBlock(blockNum: Int):ByteArray {
-        if(blockNum>=blocks.size){
-            for(i in blocks.size..blockNum){
-                blocks.add(ByteArray(blockSize))
-            }
-        }
-        return blocks[blockNum]
     }
 
     override fun writeAt(pos: Long, buffer: ByteArray) {
-        writeAt(pos, buffer, 0 , buffer.size)
+        writeAt(pos, buffer, 0, buffer.size)
     }
 
-    fun toByteArray():ByteArray{
-        val res = ByteArray(_length.toInt())
-        var endBlock = blockSize
-        for(i in 0 until blocks.size){
-            if(i==(blocks.size-1)){
-                endBlock= _length.toInt()-(i*blockSize)
+    private fun ensureCapacity(blockIndex: Int, newLength: Long) {
+        synchronized(this) {
+            while (blocks.size <= blockIndex) {
+                blocks.add(ByteArray(blockSize))
             }
-            val block = getBlock(i)
-            block.copyInto(
-                destination = res,
-                destinationOffset = i*blockSize,
-                endIndex = endBlock
-            )
+            if (length < newLength) {
+                length = newLength
+            }
         }
-        return res
+    }
+
+    fun toByteArray(): ByteArray {
+        val result = ByteArray(length.toInt())
+        var destPos = 0
+
+        for (i in blocks.indices) {
+            val block = blocks[i]
+            val copySize = minOf(blockSize, result.size - destPos)
+            if (copySize <= 0) break
+
+            System.arraycopy(block, 0, result, destPos, copySize)
+            destPos += copySize
+        }
+        return result
     }
 }

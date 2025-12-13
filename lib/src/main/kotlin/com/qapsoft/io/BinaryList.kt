@@ -19,6 +19,15 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
 
     val size get() = realSize
 
+    fun add(bytes: ByteArray):Int{
+        val index = realSize
+        val startPos = max(stream.length(), (schemaSize + indexSize).toLong())
+        stream.writeAt(startPos, bytes)
+        stream.writeAt(schemaSize.toLong() + (index*4), startPos.toInt().toByteArray())
+        realSize++
+        stream.writeAt(0, realSize.toByteArray())
+        return index
+    }
     fun add(writer:(out: OutputStream)->Unit):Int{
         val index = realSize
         val startPos = max(stream.length(), (schemaSize + indexSize).toLong())

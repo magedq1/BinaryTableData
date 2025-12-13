@@ -1,39 +1,46 @@
 package com.qapsoft.io
 
-class ByteArrayStreamAutoSize(blockSize:Int=1024): ByteArrayStreamWriterAutoSize(blockSize),  BinaryStream{
-    private var _cacheReader: BinaryStreamReader? = null
-    private val reader get() = _cacheReader?:let {
-        _cacheReader = ByteArrayStreamReader(toByteArray())
-        _cacheReader!!
-    }
+class ByteArrayStreamAutoSize(
+    blockSize: Int = 1024
+) : ByteArrayStreamWriterAutoSize(blockSize), BinaryStream {
+
     override fun readAt(
         pos: Long,
         buffer: ByteArray,
         start: Int,
         offset: Int
     ): Int {
-        return reader.readAt(
-            pos, buffer, start, offset
-        )
+        val available = minOf(offset.toLong(), length - pos)
+        if (available <= 0) return 0
+
+        var remaining = available.toInt()
+        var dstPos = start
+        var blockIndex = (pos / blockSize).toInt()
+        var blockOffset = (pos % blockSize).toInt()
+
+        while (remaining > 0) {
+            if (blockIndex >= blocks.size) break
+            val block = blocks[blockIndex]
+            val readable = minOf(blockSize - blockOffset, remaining)
+
+            System.arraycopy(
+                block,
+                blockOffset,
+                buffer,
+                dstPos,
+                readable
+            )
+
+            remaining -= readable
+            dstPos += readable
+            blockIndex++
+            blockOffset = 0
+        }
+        return available.toInt() - remaining
     }
 
-    override fun readAt(pos: Long, buffer: ByteArray): Int {
-        return reader.readAt(
-            pos, buffer
-        )
-    }
+    override fun readAt(pos: Long, buffer: ByteArray): Int =
+        readAt(pos, buffer, 0, buffer.size)
 
-    override fun length(): Long {
-        return reader.length()
-    }
-
-    override fun writeAt(pos: Long, buffer: ByteArray) {
-        writeAt(pos, buffer, 0 , buffer.size)
-    }
-
-    override fun writeAt(pos: Long, buffer: ByteArray, start: Int, offset: Int) {
-        super.writeAt(pos, buffer, start, offset)
-        _cacheReader=null
-    }
-
+    override fun length(): Long = length
 }
