@@ -27,6 +27,10 @@ open class BinaryTableData(val header: BinaryTableHeader,
         fun from(reader: BinaryStreamReader):BinaryTableData{
             val maxRowsCount = reader.getBytesAt(0,4).asInt()
             val schemaBytesSize = reader.getBytesAt(4,4).asInt()
+            if (maxRowsCount < 0 || schemaBytesSize < 0 || schemaBytesSize > reader.length() - 8) {
+                // Determine if it is a safe fallback or just throw exception
+                throw IllegalArgumentException("Invalid BinaryTableData: Rows=$maxRowsCount, SchemaSize=$schemaBytesSize, StreamSize=${reader.length()}. The file may be corrupted or format mismatched.")
+            }
             val columns = reader.getBytesAt(8, schemaBytesSize).asBinaryColumnList()
             return BinaryTableData(
                 header = BinaryTableHeader(
