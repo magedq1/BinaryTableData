@@ -20,8 +20,8 @@ open class BinaryStreamImpRandomAccess(file: File, val mode: Mode=Mode.READ_WRIT
 
     }
     override fun readAt(pos: Long,buffer:ByteArray, start: Int, offset: Int): Int {
-        rFile.seek(pos)
-        return rFile.read(buffer,start, offset)
+        // Use FileChannel for thread-safe positional reads
+        return rFile.channel.read(java.nio.ByteBuffer.wrap(buffer, start, offset), pos)
     }
 
     override fun readAt(pos: Long, buffer: ByteArray): Int {
@@ -35,8 +35,8 @@ open class BinaryStreamImpRandomAccess(file: File, val mode: Mode=Mode.READ_WRIT
     override fun writeAt(pos: Long, buffer:ByteArray,start: Int, offset: Int) {
         if(mode==Mode.READ)
             throw IOException("this stream can read only!")
-        rFile.seek(pos)
-        return rFile.write(buffer, start, offset)
+        // Use FileChannel for thread-safe positional writes
+        rFile.channel.write(java.nio.ByteBuffer.wrap(buffer, start, offset), pos)
     }
 
     override fun writeAt(pos: Long, buffer: ByteArray) {
