@@ -17,7 +17,7 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
             it
     }
 
-    val size get() = realSize
+    open val size get() = realSize
 
     fun add(bytes: ByteArray):Int{
         val index = realSize
@@ -55,7 +55,7 @@ open class BinaryList(protected val stream: BinaryStream, maxListSize:Int=1000) 
             getAsReader(index).asInputStream()
     }
 
-    fun getAsReader(index:Int): SubBinaryStreamReader{
+    open fun getAsReader(index:Int): SubBinaryStreamReader{
         if(index < 0 || index >= size)
             throw IndexOutOfBoundsException()
         val startPos = (schemaSize + (index*4)).let { indexPos->
