@@ -1,93 +1,55 @@
-# BinaryTableData Project
+# BinaryTableData Project Documentation
 
-## Project Description
+**BinaryTableData** is a comprehensive Kotlin library for structured binary data storage, providing random access, serialization, and stream management.
 
-BinaryTableData is a Kotlin library designed to simplify reading and writing structured binary data in the form of tables. The library provides tools for handling binary columns and binary tables, along with support for data compression and encryption. This library can be used in applications that require efficient storage and processing of binary data.
+## Table of Contents
+1.  [**Core Components**](docs/core.md)
+    *   `BinaryTableData`, `BinaryTableHeader`, Columns, and basic manipulation.
+2.  [**Streams & BinaryList**](docs/streams.md)
+    *   `BinaryStream` ecosystem (RandomAccess, Mapped, Memory).
+    *   `BinaryList` for variable-length item storage.
+    *   Stream interop (`InputStream`/`OutputStream`).
+3.  [**Serialization**](docs/serialization.md)
+    *   Mapping Kotlin Objects to Binary Rows.
+    *   Automatic Schema Creation.
+    *   Annotations.
+4.  [**Data Compression**](docs/compression.md)
+    *   Deflate Streams for compressed storage with read access.
+5.  [**Helpers**](docs/helpers.md)
+    *   Search (`indexOf`), Cache, and IO utilities.
 
-## Usage
+---
 
-[Instructions on how to build, run, and use the project will be placed here.]
+## Quick Start
 
+### Installation
+Add the serialization plugin and dependency (see [Serialization](docs/serialization.md)).
 
-### Getting Started
-
-1. Clone the project.
-2. Build the project using Gradle. You can use the command `./gradlew build` in the project root directory.
-3. The library can then be included as a dependency in your Kotlin project.
-
-
-## Usage Examples
-
-### Creating a Table and Adding Columns
-
+### Example: Storing Users
 ```kotlin
-val table = BinaryTableData(
-        header = BinaryTableHeader(
-            maxRowsCount = 1000,
-            columns = listOf(
-                BinaryColumn.Int("_id"),
-                BinaryColumn.String("first_name"),
-                BinaryColumn.String("last_name"),
-                BinaryColumn.Raw("raw_data", 8192), 
-                )
-
-        ),
-        file = File("storedFile")
-    )
-```
-
-### Writing Data to the Table
-
-```kotlin
-
-import com.qapsoft.io.BinaryColumn
-import com.qapsoft.io.BinaryTableData
-import com.qapsoft.io.BinaryTableHeader
-import com.qapsoft.io.setValue
-import java.io.File
+@Serializable
+data class User(
+    val id: Int,
+    @BinaryColumnLength(64) val name: String
+)
 
 fun main() {
-	val table = BinaryTableData(/*.....*/)
-
-    //write some data
-    val rowId = 0
-    table.setValue(rowId, "_id", 1)
-    //or you can also use column index instead of column name
-    //table.setValue(rowId, 0, 1)
-
-    table.setValue(rowId, "first_name", "Ali")
-
-    table.setValue(rowId, "last_name", "Saleh")
-
-    table.setValue(rowId, "raw_data", ByteArray(8192)) //any raw data
-
-
-}
-
-```
-
-### Reading Data from the Table
-
-```kotlin
-import com.qapsoft.io.BinaryColumn
-import com.qapsoft.io.BinaryTableData
-import com.qapsoft.io.BinaryTableHeader
-import com.qapsoft.io.getInt
-import com.qapsoft.io.getString
-import java.io.File
-
-fun main() {
-
-    val table = BinaryTableData(/*.....*/)
-
-    //read data
-
-    val rowId = 0
-    println(table.getInt(rowId, "_id"))
-    println(table.getString(rowId, "first_name"))
-    println(table.getString(rowId, "last_name"))
-
-    val rawData: ByteArray = table.getValue(rowId, "raw_data")
+    // Create new table
+    val table = BinaryTableData.create<User>(File("users.db"), 1000)
+    
+    // Write
+    table.encodeRow(0, User(1, "Alice"))
+    
+    // Read
+    val user = table.decodeRow<User>(0)
+    println(user.name) // Alice
 }
 ```
 
+### Example: Using Streams
+```kotlin
+val fileStream = BinaryStreamImpRandomAccess(File("large_blob.bin"), "rw")
+val outputStream = fileStream.asOutputStream()
+// Use standard java IO
+outputStream.write(byteArrayOf(1, 2, 3))
+```

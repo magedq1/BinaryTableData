@@ -184,3 +184,19 @@ fun ByteArray.asBinaryColumnList():List<BinaryColumn>{
     }
     return result
 }
+
+fun BinaryStreamWriter.asOutputStream(startPos: Long = 0): java.io.OutputStream {
+    val writer = this
+    return object : java.io.OutputStream() {
+        var currentPos = startPos
+        override fun write(b: Int) {
+            writer.writeAt(currentPos, byteArrayOf(b.toByte()))
+            currentPos++
+        }
+
+        override fun write(b: ByteArray, off: Int, len: Int) {
+            writer.writeAt(currentPos, b, off, len)
+            currentPos += len
+        }
+    }
+}
