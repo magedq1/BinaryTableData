@@ -1,6 +1,7 @@
 package com.qapsoft.io
 
 import java.io.File
+import kotlinx.serialization.serializer
 
 open class BinaryTableData(val header: BinaryTableHeader,
                            val streamReader: BinaryStreamReader?=null,
@@ -40,6 +41,25 @@ open class BinaryTableData(val header: BinaryTableHeader,
                 streamReader=reader
             )
         }
+
+        inline fun <reified T> create(file: File, maxRows: Int): BinaryTableData {
+            return BinaryTableData(
+                BinaryTableHeaderFactory.createHeaderFrom(serializer<T>(), maxRows),
+                file
+            )
+        }
+        inline fun <reified T> create(bs: BinaryStream, maxRows: Int): BinaryTableData {
+            return BinaryTableData(
+                BinaryTableHeaderFactory.createHeaderFrom(serializer<T>(), maxRows),
+                bs
+            )
+        }
+        inline fun <reified T> create(wr: BinaryStreamWriter, maxRows: Int): BinaryTableData {
+            return BinaryTableData(
+                BinaryTableHeaderFactory.createHeaderFrom(serializer<T>(), maxRows),
+                streamWriter = wr
+            )
+        }
     }
     init {
         val schemaData = header.columns.encodedAsByteArray()
@@ -56,6 +76,14 @@ open class BinaryTableData(val header: BinaryTableHeader,
         if(bytes.size > header.columns[columnIndex].length)
             throw OverSizeError()
         streamWriter?.writeAt(pos, bytes)
+    }
+    fun getValueAsStream(rowIndex:Int, columnName: String): BinaryStream {
+        return getValueAsStream(rowIndex, header.columnsInfoByName[columnName]!!.index)
+    }
+
+    open fun getValueAsStream(rowIndex:Int, columnIndex:Int): BinaryStream {
+        val pos = getPos(rowIndex, columnIndex)
+        return streamReader!!.subReader(pos, pos+header.columns[columnIndex].length).toStream()
     }
 
     fun getValue(rowIndex:Int, columnName: String):ByteArray{

@@ -8,6 +8,7 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.jvm)
+    alias(libs.plugins.kotlin.serialization)
 
     // Apply the application plugin to add support for building a CLI application in Java.
     `java-library`
@@ -29,6 +30,7 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation(libs.guava)
+    implementation(libs.kotlinx.serialization.json)
 
 }
 
