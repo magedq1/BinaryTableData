@@ -39,8 +39,21 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.magedq1"
+            artifactId = "BinaryTableData"
+            version = "1.0.0"
+
+            from(components["java"])
+        }
+    }
+}
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.

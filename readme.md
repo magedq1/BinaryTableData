@@ -22,7 +22,27 @@
 
 ## Quick Start
 
+
 ### Installation
+
+**1. Add JitPack repository:**
+*settings.gradle.kts* or *build.gradle.kts*:
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+}
+```
+
+**2. Add the dependency:**
+*build.gradle.kts*:
+```kotlin
+dependencies {
+    implementation("com.github.magedq1:BinaryTableData:Tag")
+}
+```
+
+**3. Serialization Setup:**
 Add the serialization plugin and dependency (see [Serialization](docs/serialization.md)).
 
 ### Example: Storing Users
