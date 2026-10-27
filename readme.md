@@ -2,6 +2,15 @@
 
 **BinaryTableData** is a comprehensive Kotlin library for structured binary data storage, providing random access, serialization, and stream management.
 
+## Go / TinyGo port
+
+A documented Go port with a CLI and a Wails desktop editor is available in
+[`tinygo/`](tinygo/README.md). English is the default documentation language;
+Arabic docs are in [`tinygo/README.ar.md`](tinygo/README.ar.md). The core library
+uses only the Go standard library, targets TinyGo-compatible builds, and keeps
+the exact same on-disk format (verified in both directions with Kotlin
+fixtures). The GUI is in [`tinygo/gui/`](tinygo/gui/README.md).
+
 ## Table of Contents
 1.  [**Core Components**](docs/core.md)
     *   `BinaryTableData`, `BinaryTableHeader`, Columns, and basic manipulation.
